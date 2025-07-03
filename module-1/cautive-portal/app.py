@@ -24,11 +24,13 @@ def login():
 
         username = request.form["username"]
         password = request.form["password"]
+        ip = request.form["ip"]
         mac = request.form["mac"]
 
-        print("Usuario:", username)
-        print("Contraseña:", "*" * len(password))
-        print("MAC:", mac)
+        print("Usuario:", username, flush=True)
+        print("Contraseña:", "*" * len(password), flush=True)
+        print("MAC: ", mac, flush=True)
+        print("IP: ", ip, flush=True)
 
         if not username or not password or not mac:
             print("❌ Faltan campos en el formulario.")
@@ -48,6 +50,7 @@ def login():
             req["User-Password"] = req.PwCrypt(password)
             req["Framed-IP-Address"] = client_ip
             req["Calling-Station-Id"] = mac
+            req["Framed-IP-Address"] = ip
 
             print("📡 Enviando solicitud RADIUS...")
             reply = client.SendPacket(req)

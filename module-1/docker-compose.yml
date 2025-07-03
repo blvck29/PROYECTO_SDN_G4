@@ -39,6 +39,7 @@ services:
       - "./docker-freeradius/configs/mysql/master/data:/var/lib/mysql"
       #- "./docker-freeradius/configs/mysql/master/conf.d:/etc/mysql/conf.d"
       - "./docker-freeradius/configs/mysql/radius.sql:/docker-entrypoint-initdb.d/radius.sql"
+      - "./docker-freeradius/configs/mysql/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh"
     environment:
       - MYSQL_ROOT_PASSWORD=radius
       - MYSQL_USER=radius

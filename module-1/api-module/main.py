@@ -90,6 +90,143 @@ def delete_user(username):
     conn.close()
     return jsonify({"status": "deleted", "user": username})
 
+# ========== CRUD: ROL ==========
+@app.route("/roles", methods=["GET"])
+def listar_roles():
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("SELECT * FROM rol")
+        roles = cur.fetchall()
+    conn.close()
+    return jsonify(roles)
+
+@app.route("/roles", methods=["POST"])
+def crear_rol():
+    data = request.get_json() 
+    nombre = data.get("nombreRol")
+    if not nombre:
+        return jsonify({"error": "nombreRol requerido"}), 400
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO rol (nombreRol) VALUES (%s)", (nombre,))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "created", "nombreRol": nombre}), 201
+
+@app.route("/roles/<int:id>", methods=["PUT"])
+def actualizar_rol(id):
+    data = request.json
+    nuevo_nombre = data.get("nombreRol")
+    if not nuevo_nombre:
+        return jsonify({"error": "nombreRol requerido"}), 400
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("UPDATE rol SET nombreRol = %s WHERE id = %s", (nuevo_nombre, id))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "updated", "id": id, "nombreRol": nuevo_nombre})
+
+@app.route("/roles/<int:id>", methods=["DELETE"])
+def eliminar_rol(id):
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("DELETE FROM rol WHERE id = %s", (id,))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "deleted", "id": id})
+
+# ========== CRUD: SERVICIO ==========
+@app.route("/servicios", methods=["GET"])
+def listar_servicios_filtrados():
+    rol = request.args.get("rol")  # Se obtiene con ?rol=rolsito
+    conn = get_conn()
+    with conn.cursor() as cur:
+        if rol:
+            # Subconsulta para obtener id del rol
+            cur.execute("SELECT id FROM rol WHERE nombreRol = %s", (rol,))
+            row = cur.fetchone()
+            if not row:
+                conn.close()
+                return jsonify([])  # o error 404 si prefieres
+            id_rol = row["id"]
+            cur.execute("SELECT * FROM servicios WHERE idRol = %s", (id_rol,))
+        else:
+            cur.execute("SELECT * FROM servicios")
+        servicios = cur.fetchall()
+    conn.close()
+    return jsonify(servicios)
+
+@app.route("/servicios", methods=["POST"])
+def crear_servicio():
+    data = request.json
+    nombre = data.get("nombre")
+    ip = data.get("ip")
+    id_rol = data.get("idRol")
+    if not nombre or not ip or not id_rol:
+        return jsonify({"error": "nombre, ip e idRol son requeridos"}), 400
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO servicio (nombre, ip, idRol) VALUES (%s, %s, %s)", (nombre, ip, id_rol))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "created", "nombre": nombre, "ip": ip, "idRol": id_rol}), 201
+
+@app.route("/servicios/<int:id>", methods=["PUT"])
+def actualizar_servicio(id):
+    data = request.json
+    nombre = data.get("nombre")
+    ip = data.get("ip")
+    id_rol = data.get("idRol")
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("""
+            UPDATE servicio SET nombre = %s, ip = %s, idRol = %s WHERE id = %s
+        """, (nombre, ip, id_rol, id))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "updated", "id": id})
+
+@app.route("/servicios/<int:id>", methods=["DELETE"])
+def eliminar_servicio(id):
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("DELETE FROM servicio WHERE id = %s", (id,))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "deleted", "id": id})
+
+# ========== CRUD: LOGS ==========
+@app.route("/logs", methods=["GET"])
+def listar_logs():
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("SELECT * FROM logs ORDER BY fecha DESC")
+        logs = cur.fetchall()
+    conn.close()
+    return jsonify(logs)
+
+@app.route("/logs", methods=["POST"])
+def registrar_log():
+    data = request.json
+    username = data.get("username")
+    rol = data.get("rol")
+    mac = data.get("mac")
+    ip = data.get("ip")
+
+    if not username or not rol:
+        return jsonify({"error": "username y rol son requeridos"}), 400
+
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("""
+            INSERT INTO logs (username, rol, mac, ip) 
+            VALUES (%s, %s, %s, %s)
+        """, (username, rol, mac, ip))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "log registrado"}), 201
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5010)
+
 

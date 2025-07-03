@@ -66,22 +66,14 @@ def generar_flows_para_ruta(ruta, ip_destino):
 #Función pa obtener servicios owo
 def obtener_servicios_permitidos_por_rol(rolsito, mac):
     try:
-        # Conexión a la base de datos (CAMBIAR)
-        conexion = pymysql.connect(
-            host='10.10.0.3',
-            user='radius',
-            password='radpass',
-            database='radius',
-            cursorclass=pymysql.cursors.DictCursor  # Para obtener resultados como diccionarios
-        )
+        url = f"http://10.10.0.10:5010/servicios?rol={rolsito}"  # IP del servicio que expone el API
+        resp = requests.get(url)
 
-        with conexion.cursor() as cursor:
-            # Consulta SQL
-            sql = "SELECT * FROM servicios WHERE rol = %s"
-            cursor.execute(sql, (rolsito,))
-            servicios = cursor.fetchall()
+        if resp.status_code != 200:
+            print(f"[!] Error al obtener servicios: {resp.status_code} - {resp.text}", flush=True)
+            return
 
-        conexion.close()
+        servicios = resp.json()
 
         src_dpid, src_port = get_attachment_points(mac)
 
@@ -110,6 +102,22 @@ def obtener_servicios_permitidos_por_rol(rolsito, mac):
         print(f"[!] Error al conectar con la base de datos: {e}", flush=True)
         return []
 
+def registrar_log_evento(username, rol, mac, ip):
+    try:
+        payload = {
+            "username": username,
+            "rol": rol,
+            "mac": mac,
+            "ip": ip
+        }
+        resp = requests.post("http://10.10.0.10:5010/logs", json=payload)
+        if resp.status_code == 201:
+            print(f"[LOG] Registro exitoso de acceso de {username}", flush=True)
+        else:
+            print(f"[LOG] Error al registrar log: {resp.status_code} - {resp.text}", flush=True)
+    except Exception as e:
+        print(f"[ERROR] Falló la conexión al registrar log: {e}", flush=True)
+
 @app.route('/auth-event', methods=['POST'])
 def auth_event():
     client_ip = request.remote_addr
@@ -120,38 +128,49 @@ def auth_event():
     data = request.get_json()
     username = data.get("User-Name", "")
     role = data.get("Filter-Id", "invitado")
+    ip = data.get("ip", "")  # Recibiendo el parámetro ip
     mac = data.get("mac-address", "")
+    
+    if not mac or not ip:
+        print("[!] MAC o IP faltantes en el payload", flush=True)
+        return jsonify({"error": "Missing MAC or IP"}), 400
 
-    print(f"[+] Autenticado: {username} como rol {role} y con mac {mac}", flush=True)
+    print(f"[+] Autenticado: {username} como rol {role}", flush=True)
+    print(f"   MAC-ADDRESS: {mac}", flush=True)
+    print(f"   IP-ADDRESS: {ip}", flush=True)
+
+    # Registrar el log de este evento
+    registrar_log_evento(username, role, mac, ip)
 
     #Lógica para obtener los servicios permitidos según su rol
 
     #Roles:  Admin de red, Usuario Administrativo, Docente, Secretaria, Alumno, Invitado (else)
     if role == "admin":
         print(f"[OK] - Autenticado como admin", flush=True)
-        #obtener_servicios_permitidos_por_rol("admin",mac)
+        obtener_servicios_permitidos_por_rol("admin",mac)
         #os.system("curl -X POST http://controller:8080/apply_admin_flows")
     elif role == "admin_user":
         print(f"[OK] - Autenticado como admin_user", flush=True)
-        #obtener_servicios_permitidos_por_rol("admin_user",mac)
+        obtener_servicios_permitidos_por_rol("admin_user",mac)
     elif role == "docente":
         print(f"[OK] - Autenticado como docente", flush=True)
-        #obtener_servicios_permitidos_por_rol("docente",mac)
+        obtener_servicios_permitidos_por_rol("docente",mac)
     elif role == "secretaria":
         print(f"[OK] - Autenticado como secretaria", flush=True)
-        #obtener_servicios_permitidos_por_rol("secretaria",mac)
+        obtener_servicios_permitidos_por_rol("secretaria",mac)
     elif role == "estudiante":
         print(f"[OK] - Autenticado como estudiante", flush=True)
-        #obtener_servicios_permitidos_por_rol("estudiante",mac)
+        obtener_servicios_permitidos_por_rol("estudiante",mac)
         #os.system("curl -X POST http://controller:8080/apply_student_flows")
     else:
         print(f"[OK] - Autenticado sin rol - invitado", flush=True)
         #Cambiar lógica rol invitado
-        #obtener_servicios_permitidos_por_rol("invitado",mac)
+        obtener_servicios_permitidos_por_rol("invitado",mac)
         #os.system("curl -X POST http://controller:8080/apply_guest_flows")
 
     return jsonify({"status": "ok"}), 200
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5015)
+
 
