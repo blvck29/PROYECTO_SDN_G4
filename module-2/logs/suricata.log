@@ -1,0 +1,194 @@
+[1 - Suricata-Main] 2025-06-29 05:45:23 Notice: suricata: This is Suricata version 7.0.10 RELEASE running in SYSTEM mode
+[1 - Suricata-Main] 2025-06-29 05:45:23 Info: cpu: CPUs/cores online: 3
+[1 - Suricata-Main] 2025-06-29 05:45:23 Info: suricata: Setting engine mode to IDS mode by default
+[1 - Suricata-Main] 2025-06-29 05:45:23 Info: exception-policy: master exception-policy set to: auto
+[1 - Suricata-Main] 2025-06-29 05:45:23 Info: conf: Running in live mode, activating unix socket
+[1 - Suricata-Main] 2025-06-29 05:45:23 Info: logopenfile: fast output device (regular) initialized: fast.log
+[1 - Suricata-Main] 2025-06-29 05:45:23 Info: logopenfile: eve-log output device (regular) initialized: eve.json
+[1 - Suricata-Main] 2025-06-29 05:45:23 Info: logopenfile: stats output device (regular) initialized: stats.log
+[1 - Suricata-Main] 2025-06-29 05:45:41 Info: detect: 1 rule files processed. 43871 rules successfully loaded, 0 rules failed, 0
+[1 - Suricata-Main] 2025-06-29 05:45:41 Info: threshold-config: Threshold config parsed: 0 rule(s) found
+[1 - Suricata-Main] 2025-06-29 05:45:42 Info: detect: 43874 signatures processed. 1232 are IP-only rules, 4361 are inspecting packet payload, 38061 inspect application layer, 109 are decoder event only
+[1 - Suricata-Main] 2025-06-29 05:45:53 Warning: af-packet: enp0s3: AF_PACKET tpacket-v3 is recommended for non-inline operation
+[1 - Suricata-Main] 2025-06-29 05:45:53 Info: runmodes: enp0s3: creating 3 threads
+[1 - Suricata-Main] 2025-06-29 05:45:54 Info: unix-manager: unix socket '/var/run/suricata/suricata-command.socket'
+[1 - Suricata-Main] 2025-06-29 05:45:54 Notice: threads: Threads created -> W: 3 FM: 1 FR: 1   Engine started.
+[1 - Suricata-Main] 2025-06-29 06:00:52 Notice: suricata: Signal Received.  Stopping engine.
+[1 - Suricata-Main] 2025-06-29 06:00:53 Info: suricata: time elapsed 899.256s
+[1 - Suricata-Main] 2025-06-29 06:00:54 Info: counters: Alerts: 0
+[1 - Suricata-Main] 2025-06-29 06:00:54 Notice: device: enp0s3: packets: 70222, drops: 0 (0.00%), invalid chksum: 0
+[1 - Suricata-Main] 2025-06-29 15:42:02 Notice: suricata: This is Suricata version 7.0.10 RELEASE running in SYSTEM mode
+[1 - Suricata-Main] 2025-06-29 15:42:02 Info: cpu: CPUs/cores online: 3
+[1 - Suricata-Main] 2025-06-29 15:42:02 Info: suricata: Setting engine mode to IDS mode by default
+[1 - Suricata-Main] 2025-06-29 15:42:02 Info: exception-policy: master exception-policy set to: auto
+[1 - Suricata-Main] 2025-06-29 15:42:02 Info: conf: Running in live mode, activating unix socket
+[1 - Suricata-Main] 2025-06-29 15:42:02 Info: logopenfile: fast output device (regular) initialized: fast.log
+[1 - Suricata-Main] 2025-06-29 15:42:02 Info: logopenfile: eve-log output device (regular) initialized: eve.json
+[1 - Suricata-Main] 2025-06-29 15:42:02 Info: logopenfile: stats output device (regular) initialized: stats.log
+[1 - Suricata-Main] 2025-06-29 15:42:19 Info: detect: 1 rule files processed. 43871 rules successfully loaded, 0 rules failed, 0
+[1 - Suricata-Main] 2025-06-29 15:42:19 Info: threshold-config: Threshold config parsed: 0 rule(s) found
+[1 - Suricata-Main] 2025-06-29 15:42:19 Info: detect: 43874 signatures processed. 1232 are IP-only rules, 4361 are inspecting packet payload, 38061 inspect application layer, 109 are decoder event only
+[1 - Suricata-Main] 2025-06-29 15:42:31 Warning: af-packet: enp0s3: AF_PACKET tpacket-v3 is recommended for non-inline operation
+[1 - Suricata-Main] 2025-06-29 15:42:31 Info: runmodes: enp0s3: creating 3 threads
+[1 - Suricata-Main] 2025-06-29 15:42:31 Info: unix-manager: unix socket '/var/run/suricata/suricata-command.socket'
+[1 - Suricata-Main] 2025-06-29 15:42:31 Notice: threads: Threads created -> W: 3 FM: 1 FR: 1   Engine started.
+[1 - Suricata-Main] 2025-06-29 15:43:25 Notice: suricata: Signal Received.  Stopping engine.
+[1 - Suricata-Main] 2025-06-29 15:43:26 Info: suricata: time elapsed 55.179s
+[1 - Suricata-Main] 2025-06-29 15:50:40 Notice: suricata: This is Suricata version 7.0.10 RELEASE running in SYSTEM mode
+[1 - Suricata-Main] 2025-06-29 15:50:40 Info: cpu: CPUs/cores online: 3
+[1 - Suricata-Main] 2025-06-29 15:50:40 Info: suricata: Setting engine mode to IDS mode by default
+[1 - Suricata-Main] 2025-06-29 15:50:40 Info: exception-policy: master exception-policy set to: auto
+[1 - Suricata-Main] 2025-06-29 15:50:40 Info: conf: Running in live mode, activating unix socket
+[1 - Suricata-Main] 2025-06-29 15:50:40 Info: logopenfile: fast output device (regular) initialized: fast.log
+[1 - Suricata-Main] 2025-06-29 15:50:40 Info: logopenfile: eve-log output device (regular) initialized: eve.json
+[1 - Suricata-Main] 2025-06-29 15:50:40 Info: logopenfile: stats output device (regular) initialized: stats.log
+[1 - Suricata-Main] 2025-06-29 15:50:56 Info: detect: 1 rule files processed. 43871 rules successfully loaded, 0 rules failed, 0
+[1 - Suricata-Main] 2025-06-29 15:50:56 Info: threshold-config: Threshold config parsed: 0 rule(s) found
+[1 - Suricata-Main] 2025-06-29 15:50:56 Info: detect: 43874 signatures processed. 1232 are IP-only rules, 4361 are inspecting packet payload, 38061 inspect application layer, 109 are decoder event only
+[1 - Suricata-Main] 2025-06-29 15:51:08 Warning: af-packet: enp0s3: AF_PACKET tpacket-v3 is recommended for non-inline operation
+[1 - Suricata-Main] 2025-06-29 15:51:08 Info: runmodes: enp0s3: creating 3 threads
+[1 - Suricata-Main] 2025-06-29 15:51:08 Info: unix-manager: unix socket '/var/run/suricata/suricata-command.socket'
+[1 - Suricata-Main] 2025-06-29 15:51:09 Notice: threads: Threads created -> W: 3 FM: 1 FR: 1   Engine started.
+[1 - Suricata-Main] 2025-06-29 16:16:14 Notice: suricata: Signal Received.  Stopping engine.
+[1 - Suricata-Main] 2025-06-29 16:16:18 Info: suricata: time elapsed 1509.446s
+[1 - Suricata-Main] 2025-06-29 16:18:26 Notice: suricata: This is Suricata version 7.0.10 RELEASE running in SYSTEM mode
+[1 - Suricata-Main] 2025-06-29 16:18:26 Info: cpu: CPUs/cores online: 3
+[1 - Suricata-Main] 2025-06-29 16:18:26 Info: suricata: Setting engine mode to IDS mode by default
+[1 - Suricata-Main] 2025-06-29 16:18:26 Info: exception-policy: master exception-policy set to: auto
+[1 - Suricata-Main] 2025-06-29 16:18:26 Info: conf: Running in live mode, activating unix socket
+[1 - Suricata-Main] 2025-06-29 16:18:26 Info: logopenfile: fast output device (regular) initialized: fast.log
+[1 - Suricata-Main] 2025-06-29 16:18:26 Info: logopenfile: eve-log output device (regular) initialized: eve.json
+[1 - Suricata-Main] 2025-06-29 16:18:26 Info: logopenfile: stats output device (regular) initialized: stats.log
+[1 - Suricata-Main] 2025-06-29 16:18:40 Info: detect: 1 rule files processed. 43871 rules successfully loaded, 0 rules failed, 0
+[1 - Suricata-Main] 2025-06-29 16:18:40 Info: threshold-config: Threshold config parsed: 0 rule(s) found
+[1 - Suricata-Main] 2025-06-29 16:18:40 Info: detect: 43874 signatures processed. 1232 are IP-only rules, 4361 are inspecting packet payload, 38061 inspect application layer, 109 are decoder event only
+[1 - Suricata-Main] 2025-06-29 16:18:51 Warning: af-packet: enp0s3: AF_PACKET tpacket-v3 is recommended for non-inline operation
+[1 - Suricata-Main] 2025-06-29 16:18:51 Info: runmodes: enp0s3: creating 3 threads
+[1 - Suricata-Main] 2025-06-29 16:18:51 Info: unix-manager: unix socket '/var/run/suricata/suricata-command.socket'
+[1 - Suricata-Main] 2025-06-29 16:18:51 Notice: threads: Threads created -> W: 3 FM: 1 FR: 1   Engine started.
+[1 - Suricata-Main] 2025-06-29 17:31:30 Notice: detect: rule reload starting
+[1 - Suricata-Main] 2025-06-29 17:31:46 Info: detect: 1 rule files processed. 44057 rules successfully loaded, 0 rules failed, 0
+[1 - Suricata-Main] 2025-06-29 17:31:46 Info: threshold-config: Threshold config parsed: 0 rule(s) found
+[1 - Suricata-Main] 2025-06-29 17:31:46 Info: detect: 44060 signatures processed. 953 are IP-only rules, 4362 are inspecting packet payload, 38523 inspect application layer, 109 are decoder event only
+[1 - Suricata-Main] 2025-06-29 17:31:58 Notice: detect: rule reload complete
+[1 - Suricata-Main] 2025-06-29 17:41:10 Notice: suricata: Signal Received.  Stopping engine.
+[1 - Suricata-Main] 2025-06-29 17:41:11 Info: suricata: time elapsed 4939.968s
+[1 - Suricata-Main] 2025-06-29 17:42:19 Info: counters: Alerts: 0
+[1 - Suricata-Main] 2025-06-29 17:42:19 Notice: suricata: This is Suricata version 7.0.10 RELEASE running in SYSTEM mode
+[1 - Suricata-Main] 2025-06-29 17:42:19 Info: cpu: CPUs/cores online: 3
+[1 - Suricata-Main] 2025-06-29 17:42:19 Info: suricata: Setting engine mode to IDS mode by default
+[1 - Suricata-Main] 2025-06-29 17:42:19 Info: exception-policy: master exception-policy set to: auto
+[1 - Suricata-Main] 2025-06-29 17:42:19 Info: conf: Running in live mode, activating unix socket
+[1 - Suricata-Main] 2025-06-29 17:42:19 Info: logopenfile: fast output device (regular) initialized: fast.log
+[1 - Suricata-Main] 2025-06-29 17:42:19 Info: logopenfile: eve-log output device (regular) initialized: eve.json
+[1 - Suricata-Main] 2025-06-29 17:42:19 Info: logopenfile: stats output device (regular) initialized: stats.log
+[1 - Suricata-Main] 2025-06-29 17:42:34 Info: detect: 1 rule files processed. 44057 rules successfully loaded, 0 rules failed, 0
+[1 - Suricata-Main] 2025-06-29 17:42:34 Info: threshold-config: Threshold config parsed: 0 rule(s) found
+[1 - Suricata-Main] 2025-06-29 17:42:34 Info: detect: 44060 signatures processed. 953 are IP-only rules, 4362 are inspecting packet payload, 38523 inspect application layer, 109 are decoder event only
+[1 - Suricata-Main] 2025-06-29 17:42:45 Warning: af-packet: enp0s3: AF_PACKET tpacket-v3 is recommended for non-inline operation
+[1 - Suricata-Main] 2025-06-29 17:42:45 Info: runmodes: enp0s3: creating 3 threads
+[1 - Suricata-Main] 2025-06-29 17:42:45 Info: unix-manager: unix socket '/var/run/suricata/suricata-command.socket'
+[1 - Suricata-Main] 2025-06-29 17:42:45 Notice: threads: Threads created -> W: 3 FM: 1 FR: 1   Engine started.
+[1 - Suricata-Main] 2025-06-29 17:55:30 Notice: suricata: Signal Received.  Stopping engine.
+[1 - Suricata-Main] 2025-06-29 17:55:31 Info: suricata: time elapsed 765.694s
+[1 - Suricata-Main] 2025-06-29 17:55:32 Info: counters: Alerts: 0
+[1 - Suricata-Main] 2025-06-29 17:55:32 Notice: device: enp0s3: packets: 98, drops: 0 (0.00%), invalid chksum: 0
+[1 - Suricata-Main] 2025-06-29 17:55:49 Notice: suricata: This is Suricata version 7.0.10 RELEASE running in SYSTEM mode
+[1 - Suricata-Main] 2025-06-29 17:55:49 Info: cpu: CPUs/cores online: 3
+[1 - Suricata-Main] 2025-06-29 17:55:49 Info: suricata: Setting engine mode to IDS mode by default
+[1 - Suricata-Main] 2025-06-29 17:55:49 Info: exception-policy: master exception-policy set to: auto
+[1 - Suricata-Main] 2025-06-29 17:55:49 Info: conf: Running in live mode, activating unix socket
+[1 - Suricata-Main] 2025-06-29 17:55:49 Info: logopenfile: fast output device (regular) initialized: fast.log
+[1 - Suricata-Main] 2025-06-29 17:55:49 Info: logopenfile: eve-log output device (regular) initialized: eve.json
+[1 - Suricata-Main] 2025-06-29 17:55:49 Info: logopenfile: stats output device (regular) initialized: stats.log
+[1 - Suricata-Main] 2025-06-29 17:56:03 Info: detect: 1 rule files processed. 44057 rules successfully loaded, 0 rules failed, 0
+[1 - Suricata-Main] 2025-06-29 17:56:03 Info: threshold-config: Threshold config parsed: 0 rule(s) found
+[1 - Suricata-Main] 2025-06-29 17:56:03 Info: detect: 44060 signatures processed. 953 are IP-only rules, 4362 are inspecting packet payload, 38523 inspect application layer, 109 are decoder event only
+[1 - Suricata-Main] 2025-06-29 17:56:14 Warning: af-packet: enp0s3: AF_PACKET tpacket-v3 is recommended for non-inline operation
+[1 - Suricata-Main] 2025-06-29 17:56:14 Info: runmodes: enp0s3: creating 3 threads
+[1 - Suricata-Main] 2025-06-29 17:56:15 Info: unix-manager: unix socket '/var/run/suricata/suricata-command.socket'
+[1 - Suricata-Main] 2025-06-29 17:56:15 Notice: threads: Threads created -> W: 3 FM: 1 FR: 1   Engine started.
+[1 - Suricata-Main] 2025-06-29 18:09:25 Notice: suricata: Signal Received.  Stopping engine.
+[1 - Suricata-Main] 2025-06-29 18:09:25 Info: suricata: time elapsed 791.156s
+[1 - Suricata-Main] 2025-06-29 18:11:52 Notice: suricata: This is Suricata version 7.0.10 RELEASE running in SYSTEM mode
+[1 - Suricata-Main] 2025-06-29 18:11:52 Info: cpu: CPUs/cores online: 4
+[1 - Suricata-Main] 2025-06-29 18:11:52 Info: suricata: Setting engine mode to IDS mode by default
+[1 - Suricata-Main] 2025-06-29 18:11:52 Info: exception-policy: master exception-policy set to: auto
+[1 - Suricata-Main] 2025-06-29 18:11:52 Info: conf: Running in live mode, activating unix socket
+[1 - Suricata-Main] 2025-06-29 18:11:52 Info: logopenfile: fast output device (regular) initialized: fast.log
+[1 - Suricata-Main] 2025-06-29 18:11:52 Info: logopenfile: eve-log output device (regular) initialized: eve.json
+[1 - Suricata-Main] 2025-06-29 18:11:52 Info: logopenfile: stats output device (regular) initialized: stats.log
+[1 - Suricata-Main] 2025-06-29 18:12:10 Info: detect: 1 rule files processed. 44057 rules successfully loaded, 0 rules failed, 0
+[1 - Suricata-Main] 2025-06-29 18:12:10 Info: threshold-config: Threshold config parsed: 0 rule(s) found
+[1 - Suricata-Main] 2025-06-29 18:12:10 Info: detect: 44060 signatures processed. 953 are IP-only rules, 4362 are inspecting packet payload, 38523 inspect application layer, 109 are decoder event only
+[1 - Suricata-Main] 2025-06-29 18:12:22 Warning: af-packet: enp0s3: AF_PACKET tpacket-v3 is recommended for non-inline operation
+[1 - Suricata-Main] 2025-06-29 18:12:22 Info: runmodes: enp0s3: creating 4 threads
+[1 - Suricata-Main] 2025-06-29 18:12:22 Info: unix-manager: unix socket '/var/run/suricata/suricata-command.socket'
+[1 - Suricata-Main] 2025-06-29 18:12:22 Notice: threads: Threads created -> W: 4 FM: 1 FR: 1   Engine started.
+[1 - Suricata-Main] 2025-06-29 18:28:33 Notice: suricata: Signal Received.  Stopping engine.
+[1 - Suricata-Main] 2025-06-29 18:28:33 Info: suricata: time elapsed 971.630s
+[1 - Suricata-Main] 2025-06-29 18:28:34 Info: counters: Alerts: 131
+[1 - Suricata-Main] 2025-06-29 18:28:34 Notice: device: enp0s3: packets: 125006, drops: 0 (0.00%), invalid chksum: 0
+[1 - Suricata-Main] 2025-06-29 18:29:13 Notice: suricata: This is Suricata version 7.0.10 RELEASE running in SYSTEM mode
+[1 - Suricata-Main] 2025-06-29 18:29:13 Info: cpu: CPUs/cores online: 4
+[1 - Suricata-Main] 2025-06-29 18:29:13 Info: suricata: Setting engine mode to IDS mode by default
+[1 - Suricata-Main] 2025-06-29 18:29:13 Info: exception-policy: master exception-policy set to: auto
+[1 - Suricata-Main] 2025-06-29 18:29:13 Info: conf: Running in live mode, activating unix socket
+[1 - Suricata-Main] 2025-06-29 18:29:13 Info: logopenfile: fast output device (regular) initialized: fast.log
+[1 - Suricata-Main] 2025-06-29 18:29:13 Info: logopenfile: eve-log output device (regular) initialized: eve.json
+[1 - Suricata-Main] 2025-06-29 18:29:13 Info: logopenfile: stats output device (regular) initialized: stats.log
+[1 - Suricata-Main] 2025-06-29 18:29:28 Info: detect: 1 rule files processed. 44057 rules successfully loaded, 0 rules failed, 0
+[1 - Suricata-Main] 2025-06-29 18:29:28 Info: threshold-config: Threshold config parsed: 0 rule(s) found
+[1 - Suricata-Main] 2025-06-29 18:29:28 Info: detect: 44060 signatures processed. 953 are IP-only rules, 4362 are inspecting packet payload, 38523 inspect application layer, 109 are decoder event only
+[1 - Suricata-Main] 2025-06-29 18:29:40 Warning: ioctl: lo: failed to set SIOCETHTOOL ioctl: Operation not supported
+[1 - Suricata-Main] 2025-06-29 18:29:40 Warning: af-packet: lo: AF_PACKET tpacket-v3 is recommended for non-inline operation
+[1 - Suricata-Main] 2025-06-29 18:29:40 Info: runmodes: lo: creating 4 threads
+[1 - Suricata-Main] 2025-06-29 18:29:40 Info: unix-manager: unix socket '/var/run/suricata/suricata-command.socket'
+[1 - Suricata-Main] 2025-06-29 18:29:40 Notice: threads: Threads created -> W: 4 FM: 1 FR: 1   Engine started.
+[1 - Suricata-Main] 2025-06-29 18:35:52 Notice: suricata: Signal Received.  Stopping engine.
+[1 - Suricata-Main] 2025-06-29 18:35:53 Info: suricata: time elapsed 373.541s
+[1 - Suricata-Main] 2025-06-29 18:35:54 Info: counters: Alerts: 0
+[1 - Suricata-Main] 2025-06-29 18:35:54 Notice: device: lo: packets: 400, drops: 0 (0.00%), invalid chksum: 0
+[1 - Suricata-Main] 2025-06-29 18:35:54 Warning: ioctl: lo: failed to set SIOCETHTOOL ioctl: Operation not supported
+[1 - Suricata-Main] 2025-06-29 18:35:57 Notice: suricata: This is Suricata version 7.0.10 RELEASE running in SYSTEM mode
+[1 - Suricata-Main] 2025-06-29 18:35:57 Info: cpu: CPUs/cores online: 4
+[1 - Suricata-Main] 2025-06-29 18:35:57 Info: suricata: Setting engine mode to IDS mode by default
+[1 - Suricata-Main] 2025-06-29 18:35:57 Info: exception-policy: master exception-policy set to: auto
+[1 - Suricata-Main] 2025-06-29 18:35:57 Info: conf: Running in live mode, activating unix socket
+[1 - Suricata-Main] 2025-06-29 18:35:57 Info: logopenfile: fast output device (regular) initialized: fast.log
+[1 - Suricata-Main] 2025-06-29 18:35:57 Info: logopenfile: eve-log output device (regular) initialized: eve.json
+[1 - Suricata-Main] 2025-06-29 18:35:57 Info: logopenfile: stats output device (regular) initialized: stats.log
+[1 - Suricata-Main] 2025-06-29 18:36:14 Info: detect: 2 rule files processed. 44058 rules successfully loaded, 0 rules failed, 0
+[1 - Suricata-Main] 2025-06-29 18:36:14 Info: threshold-config: Threshold config parsed: 0 rule(s) found
+[1 - Suricata-Main] 2025-06-29 18:36:14 Info: detect: 44061 signatures processed. 953 are IP-only rules, 4362 are inspecting packet payload, 38523 inspect application layer, 109 are decoder event only
+[1 - Suricata-Main] 2025-06-29 18:36:14 Warning: detect: rule 1000001: SYN-only to port(s) 80:80 w/o direction specified, disabling for toclient direction
+[1 - Suricata-Main] 2025-06-29 18:36:25 Warning: ioctl: lo: failed to set SIOCETHTOOL ioctl: Operation not supported
+[1 - Suricata-Main] 2025-06-29 18:36:25 Warning: af-packet: lo: AF_PACKET tpacket-v3 is recommended for non-inline operation
+[1 - Suricata-Main] 2025-06-29 18:36:25 Info: runmodes: lo: creating 4 threads
+[1 - Suricata-Main] 2025-06-29 18:36:25 Info: unix-manager: unix socket '/var/run/suricata/suricata-command.socket'
+[1 - Suricata-Main] 2025-06-29 18:36:25 Notice: threads: Threads created -> W: 4 FM: 1 FR: 1   Engine started.
+[1 - Suricata-Main] 2025-06-29 18:50:21 Notice: suricata: Signal Received.  Stopping engine.
+[1 - Suricata-Main] 2025-06-29 18:50:21 Info: suricata: time elapsed 835.954s
+[1 - Suricata-Main] 2025-06-29 18:50:22 Info: counters: Alerts: 3
+[1 - Suricata-Main] 2025-06-29 18:50:22 Notice: device: lo: packets: 238, drops: 0 (0.00%), invalid chksum: 0
+[1 - Suricata-Main] 2025-06-29 18:50:22 Warning: ioctl: lo: failed to set SIOCETHTOOL ioctl: Operation not supported
+[1 - Suricata-Main] 2025-06-30 03:25:08 Notice: suricata: This is Suricata version 7.0.10 RELEASE running in SYSTEM mode
+[1 - Suricata-Main] 2025-06-30 03:25:08 Info: cpu: CPUs/cores online: 4
+[1 - Suricata-Main] 2025-06-30 03:25:08 Info: suricata: Setting engine mode to IDS mode by default
+[1 - Suricata-Main] 2025-06-30 03:25:08 Info: exception-policy: master exception-policy set to: auto
+[1 - Suricata-Main] 2025-06-30 03:25:08 Info: conf: Running in live mode, activating unix socket
+[1 - Suricata-Main] 2025-06-30 03:25:08 Info: logopenfile: fast output device (regular) initialized: fast.log
+[1 - Suricata-Main] 2025-06-30 03:25:08 Info: logopenfile: eve-log output device (regular) initialized: eve.json
+[1 - Suricata-Main] 2025-06-30 03:25:08 Info: logopenfile: stats output device (regular) initialized: stats.log
+[1 - Suricata-Main] 2025-06-30 03:25:24 Info: detect: 2 rule files processed. 44058 rules successfully loaded, 0 rules failed, 0
+[1 - Suricata-Main] 2025-06-30 03:25:24 Info: threshold-config: Threshold config parsed: 0 rule(s) found
+[1 - Suricata-Main] 2025-06-30 03:25:24 Info: detect: 44061 signatures processed. 953 are IP-only rules, 4362 are inspecting packet payload, 38523 inspect application layer, 109 are decoder event only
+[1 - Suricata-Main] 2025-06-30 03:25:24 Warning: detect: rule 1000001: SYN-only to port(s) 80:80 w/o direction specified, disabling for toclient direction
+[1 - Suricata-Main] 2025-06-30 03:25:36 Warning: ioctl: lo: failed to set SIOCETHTOOL ioctl: Operation not supported
+[1 - Suricata-Main] 2025-06-30 03:25:36 Warning: af-packet: lo: AF_PACKET tpacket-v3 is recommended for non-inline operation
+[1 - Suricata-Main] 2025-06-30 03:25:36 Info: runmodes: lo: creating 4 threads
+[1 - Suricata-Main] 2025-06-30 03:25:36 Info: unix-manager: unix socket '/var/run/suricata/suricata-command.socket'
+[1 - Suricata-Main] 2025-06-30 03:25:36 Notice: threads: Threads created -> W: 4 FM: 1 FR: 1   Engine started.
+[1 - Suricata-Main] 2025-06-30 04:01:31 Notice: suricata: Signal Received.  Stopping engine.
+[1 - Suricata-Main] 2025-06-30 04:01:31 Info: suricata: time elapsed 2155.269s
+[1 - Suricata-Main] 2025-06-30 04:02:54 Error: flow-manager: unable to get all flow recycler threads to shutdown in time

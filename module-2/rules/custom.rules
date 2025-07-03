@@ -1,0 +1,1 @@
+alert tcp any any -> any 80 (msg:"[TEST] Posible SYN Flood Detectado"; flags:S; threshold:type threshold, track by_dst, count 20, seconds 1; sid:1000001; rev:1;)
