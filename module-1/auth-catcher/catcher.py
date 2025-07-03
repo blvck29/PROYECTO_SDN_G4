@@ -2,13 +2,14 @@ from flask import Flask, request, jsonify, abort
 import os
 import pymysql
 import requests
+import json
 
 
 app = Flask(__name__)
 
 # Solo se aceptarán peticiones desde esta IP (freeradius)
 ALLOWED_IPS = ['10.10.0.2']
-FLOODLIGHT_URL = "http://10.20.12.161:8080"
+FLOODLIGHT_URL = "http://192.168.201.200:8080"
 
 
 #Punto de conexión de un host
@@ -60,6 +61,8 @@ def generar_flows_para_ruta(ruta, ip_destino):
             "idle_timeout": 300,   #5min owo (BAJARLE TMB)
             "actions": f"output={port}"
         }
+        print(f"[VALIDACIÓN] Flow que se enviará: {flow}", flush=True)
+
         flows.append(flow)
     return flows
 
@@ -74,22 +77,34 @@ def obtener_servicios_permitidos_por_rol(rolsito, mac):
             return
 
         servicios = resp.json()
-
+        print(f"Los servicios permitidos son: {servicios}", flush = True)
         src_dpid, src_port = get_attachment_points(mac)
 
         if not src_dpid:
             print(f"[!] No se pudo obtener el punto de conexión de {mac}", flush=True)
             return
 
+        servicios_unicos = []
         for servicio in servicios:
-            dst_dpid = servicio["dpid"]
-            dst_port = servicio["puerto"]
+            if servicio not in servicios_unicos:
+                servicios_unicos.append(servicio)
+        servicios = servicios_unicos
+
+        for i, servicio in enumerate(servicios):
+            print(f"[DEBUG] Procesando servicio {i+1}: {servicio}", flush=True)  # DEBUG
+            dst_dpid = "00:00:aa:51:aa:ba:72:41"
+            dst_port = 5
             ip_destino = servicio["ip"]
 
             ruta = get_route(src_dpid, src_port, dst_dpid, dst_port)
             if ruta:
                 flows = generar_flows_para_ruta(ruta, ip_destino)
+                print(f"[DEBUG] Flows generados: {len(flows)}", flush=True)  # DEBUG
+
                 for flow in flows:
+                    print(f"[DEBUG] Instalando flow: {flow['name']}", flush=True)  # DEBUG
+                    print(f"[JSON ENVIADO] {json.dumps(flow, indent=2)}", flush=True)
+
                     r = requests.post(f"{FLOODLIGHT_URL}/wm/staticflowpusher/json", json=flow)
                     if r.status_code == 200:
                         print(f"[+] Flow instalado en {flow['switch']} hacia {ip_destino}", flush=True)
@@ -158,9 +173,9 @@ def auth_event():
     elif role == "secretaria":
         print(f"[OK] - Autenticado como secretaria", flush=True)
         obtener_servicios_permitidos_por_rol("secretaria",mac)
-    elif role == "estudiante":
-        print(f"[OK] - Autenticado como estudiante", flush=True)
-        obtener_servicios_permitidos_por_rol("estudiante",mac)
+    elif role == "alumno":
+        print(f"[OK] - Autenticado como alumno", flush=True)
+        obtener_servicios_permitidos_por_rol("alumno",mac)
         #os.system("curl -X POST http://controller:8080/apply_student_flows")
     else:
         print(f"[OK] - Autenticado sin rol - invitado", flush=True)
@@ -172,5 +187,7 @@ def auth_event():
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5015)
+
+
 
 

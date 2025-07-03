@@ -24,6 +24,12 @@ def create_user():
 
     conn = get_conn()
     with conn.cursor() as cur:
+        # Verificar si el rol existe en la tabla rol
+        cur.execute("SELECT 1 FROM rol WHERE nombreRol = %s", (role,))
+        if not cur.fetchone():
+            conn.close()
+            return jsonify({"error": f"Rol '{role}' no válido. Por favor, corrija el rol o regístrelo primero."}), 400
+        
         # Verificar si ya existe
         cur.execute("SELECT 1 FROM radcheck WHERE username = %s", (username,))
         if cur.fetchone():
@@ -166,7 +172,7 @@ def crear_servicio():
         return jsonify({"error": "nombre, ip e idRol son requeridos"}), 400
     conn = get_conn()
     with conn.cursor() as cur:
-        cur.execute("INSERT INTO servicio (nombre, ip, idRol) VALUES (%s, %s, %s)", (nombre, ip, id_rol))
+        cur.execute("INSERT INTO servicios (nombre, ip, idRol) VALUES (%s, %s, %s)", (nombre, ip, id_rol))
     conn.commit()
     conn.close()
     return jsonify({"status": "created", "nombre": nombre, "ip": ip, "idRol": id_rol}), 201
@@ -180,7 +186,7 @@ def actualizar_servicio(id):
     conn = get_conn()
     with conn.cursor() as cur:
         cur.execute("""
-            UPDATE servicio SET nombre = %s, ip = %s, idRol = %s WHERE id = %s
+            UPDATE servicios SET nombre = %s, ip = %s, idRol = %s WHERE id = %s
         """, (nombre, ip, id_rol, id))
     conn.commit()
     conn.close()
@@ -190,7 +196,7 @@ def actualizar_servicio(id):
 def eliminar_servicio(id):
     conn = get_conn()
     with conn.cursor() as cur:
-        cur.execute("DELETE FROM servicio WHERE id = %s", (id,))
+        cur.execute("DELETE FROM servicios WHERE id = %s", (id,))
     conn.commit()
     conn.close()
     return jsonify({"status": "deleted", "id": id})
@@ -228,5 +234,6 @@ def registrar_log():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5010)
+
 
 
