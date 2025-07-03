@@ -2,7 +2,9 @@ version: '2.2'
 
 services:
   freeradius:
-    image: "2stacks/freeradius"
+    build:
+      context: ./docker-freeradius
+      dockerfile: Dockerfile
     container_name: freeradius
     ports:
       - "1812:1812/udp"
@@ -10,6 +12,7 @@ services:
     volumes:
       - "./docker-freeradius/configs/radius/users:/etc/raddb/users"
       - "./docker-freeradius/configs/radius/clients.conf:/etc/raddb/clients.conf"
+      - "./docker-freeradius/etc/raddb/sites-enabled/default:/etc/raddb/sites-enabled/default"
     environment:
       - DB_NAME=radius
       - DB_HOST=mysql
@@ -63,12 +66,22 @@ services:
   auth-catcher:
     build:
       context: ./auth-catcher
-    container_name: auth_catcher
+    container_name: auth-catcher
     expose:
       - "5015"
     networks:
       backend:
         ipv4_address: 10.10.0.5
+
+  api-module:
+    build:
+      context: ./api-module
+    container_name: api-module
+    ports:
+      - "5010:5010"
+    networks:
+      backend:
+        ipv4_address: 10.10.0.10
 
 networks:
   backend:

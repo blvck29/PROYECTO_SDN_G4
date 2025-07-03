@@ -18,38 +18,55 @@ DICTIONARY_PATH = "dictionary"
 @app.route("/portal", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
+
+        print("=== POST recibido en /portal ===")
+        print("request.form:", request.form)
+
         username = request.form["username"]
         password = request.form["password"]
+        mac = request.form["mac"]
+
+        print("Usuario:", username)
+        print("Contraseña:", "*" * len(password))
+        print("MAC:", mac)
+
+        if not username or not password or not mac:
+            print("❌ Faltan campos en el formulario.")
+            return "Error: faltan campos", 400
 
        # IP del cliente que accede al portal
         client_ip = request.remote_addr or "0.0.0.0"
 
-        # IP del servidor Flask (NAS-IP)
-        server_ip = socket.gethostbyname(socket.gethostname())
+        print("IP del cliente:", client_ip)
 
         #Cliente RADIUS
-        client = Client(server=RADIUS_SERVER, secret=RADIUS_SECRET, dict=Dictionary(DICTIONARY_PATH))
-        client.AuthPort = RADIUS_PORT
-
-        #Petición owo
-        req = client.CreateAuthPacket(code=AccessRequest, User_Name=username)
-        req["User-Password"] = req.PwCrypt(password)  # Encripta usando MD5 con el secret
-        req["Framed-IP-Address"] = client_ip          # IP del usuario
-        req["NAS-IP-Address"] = server_ip             # IP del servidor Flask
-
         try:
-            reply = client.SendPacket(req)  # Enviar al servidor RADIUS
+            client = Client(server=RADIUS_SERVER, secret=RADIUS_SECRET, dict=Dictionary(DICTIONARY_PATH))
+            client.AuthPort = RADIUS_PORT
+
+            req = client.CreateAuthPacket(code=AccessRequest, User_Name=username)
+            req["User-Password"] = req.PwCrypt(password)
+            req["Framed-IP-Address"] = client_ip
+            req["Calling-Station-Id"] = mac
+
+            print("📡 Enviando solicitud RADIUS...")
+            reply = client.SendPacket(req)
+
+            print("Código de respuesta RADIUS:", reply.code)
 
             if reply.code == AccessAccept:
+                print("✅ Autenticación exitosa")
                 return render_template("success.html", username=username)
             else:
+                print("❌ Acceso denegado por RADIUS")
                 return render_template("login.html", error="Acceso denegado por RADIUS")
 
         except Exception as e:
-            return render_template("login.html", error=f"Error al conectar con el servidor")
-        
+            print("🚨 Error al contactar con RADIUS:", e)
+            return render_template("login.html", error="Error al conectar con el servidor")
+
     return render_template("login.html")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)
 

@@ -1,4 +1,3 @@
-# catcher.py
 from flask import Flask, request, jsonify, abort
 import os
 import pymysql
@@ -26,12 +25,12 @@ def get_attachment_points(mac_address):
                     punto = aps[0]
                     return punto["switchDPID"], punto["port"]
                 else:
-                    print(f"La MAC {mac_address} no tiene attachmentPoint.")
-        print(f"La MAC {mac_address} no fue encontrada.")
+                    print(f"La MAC {mac_address} no tiene attachmentPoint.", flush=True)
+        print(f"La MAC {mac_address} no fue encontrada.", flush=True)
     else:
-        print(f"[{response.status_code}]")
-        print(f"Respuesta: {response.text}")
-    
+        print(f"[{response.status_code}]", flush=True)
+        print(f"Respuesta: {response.text}", flush=True)
+
     return None, None
 
 # Consulta de la ruta
@@ -69,10 +68,10 @@ def obtener_servicios_permitidos_por_rol(rolsito, mac):
     try:
         # Conexión a la base de datos (CAMBIAR)
         conexion = pymysql.connect(
-            host='localhost',         # o el nombre del servicio en Docker, como 'db'
-            user='usuario_db',
-            password='clave_db',
-            database='db_sdn',
+            host='10.10.0.3',
+            user='radius',
+            password='radpass',
+            database='radius',
             cursorclass=pymysql.cursors.DictCursor  # Para obtener resultados como diccionarios
         )
 
@@ -81,13 +80,13 @@ def obtener_servicios_permitidos_por_rol(rolsito, mac):
             sql = "SELECT * FROM servicios WHERE rol = %s"
             cursor.execute(sql, (rolsito,))
             servicios = cursor.fetchall()
-        
+
         conexion.close()
-        
+
         src_dpid, src_port = get_attachment_points(mac)
 
         if not src_dpid:
-            print(f"[!] No se pudo obtener el punto de conexión de {mac}")
+            print(f"[!] No se pudo obtener el punto de conexión de {mac}", flush=True)
             return
 
         for servicio in servicios:
@@ -101,53 +100,58 @@ def obtener_servicios_permitidos_por_rol(rolsito, mac):
                 for flow in flows:
                     r = requests.post(f"{FLOODLIGHT_URL}/wm/staticflowpusher/json", json=flow)
                     if r.status_code == 200:
-                        print(f"[+] Flow instalado en {flow['switch']} hacia {ip_destino}")
+                        print(f"[+] Flow instalado en {flow['switch']} hacia {ip_destino}", flush=True)
                     else:
-                        print(f"[!] Error al instalar flow: {r.text}")
+                        print(f"[!] Error al instalar flow: {r.text}", flush=True)
             else:
-                print(f"[!] No se encontró ruta hacia {ip_destino}")
+                print(f"[!] No se encontró ruta hacia {ip_destino}", flush=True)
 
     except Exception as e:
-        print(f"[!] Error al conectar con la base de datos: {e}")
+        print(f"[!] Error al conectar con la base de datos: {e}", flush=True)
         return []
 
 @app.route('/auth-event', methods=['POST'])
 def auth_event():
     client_ip = request.remote_addr
     if client_ip not in ALLOWED_IPS:
-        print(f"[!] Rechazada conexión desde IP no autorizada: {client_ip}")
+        print(f"[!] Rechazada conexión desde IP no autorizada: {client_ip}", flush=True)
         abort(403)
 
     data = request.get_json()
     username = data.get("User-Name", "")
     role = data.get("Filter-Id", "invitado")
-    #IMPORTANTE: NECESITAREMOS QUE LA MAC LA ENVIE RADIUS SINO F    
     mac = data.get("mac-address", "")
 
-    print(f"[+] Autenticado: {username} como rol {role}")   
-    
+    print(f"[+] Autenticado: {username} como rol {role} y con mac {mac}", flush=True)
+
     #Lógica para obtener los servicios permitidos según su rol
 
     #Roles:  Admin de red, Usuario Administrativo, Docente, Secretaria, Alumno, Invitado (else)
     if role == "admin":
-        obtener_servicios_permitidos_por_rol("admin",mac)
+        print(f"[OK] - Autenticado como admin", flush=True)
+        #obtener_servicios_permitidos_por_rol("admin",mac)
         #os.system("curl -X POST http://controller:8080/apply_admin_flows")
     elif role == "admin_user":
-        obtener_servicios_permitidos_por_rol("admin_user",mac)
+        print(f"[OK] - Autenticado como admin_user", flush=True)
+        #obtener_servicios_permitidos_por_rol("admin_user",mac)
     elif role == "docente":
-        obtener_servicios_permitidos_por_rol("docente",mac)
+        print(f"[OK] - Autenticado como docente", flush=True)
+        #obtener_servicios_permitidos_por_rol("docente",mac)
     elif role == "secretaria":
-        obtener_servicios_permitidos_por_rol("secretaria",mac)
+        print(f"[OK] - Autenticado como secretaria", flush=True)
+        #obtener_servicios_permitidos_por_rol("secretaria",mac)
     elif role == "estudiante":
-        obtener_servicios_permitidos_por_rol("estudiante",mac)
+        print(f"[OK] - Autenticado como estudiante", flush=True)
+        #obtener_servicios_permitidos_por_rol("estudiante",mac)
         #os.system("curl -X POST http://controller:8080/apply_student_flows")
     else:
+        print(f"[OK] - Autenticado sin rol - invitado", flush=True)
         #Cambiar lógica rol invitado
-        obtener_servicios_permitidos_por_rol("invitado",mac)
+        #obtener_servicios_permitidos_por_rol("invitado",mac)
         #os.system("curl -X POST http://controller:8080/apply_guest_flows")
-        
 
     return jsonify({"status": "ok"}), 200
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5015)
+
