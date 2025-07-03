@@ -1,0 +1,108 @@
+version: '2.2'
+
+services:
+  # Administrador de Red - Acceso total
+  admin_web:
+    image: nginx:latest
+    container_name: admin_web
+    ports:
+      - "8080:80"
+      - "443:443"
+    volumes:
+      - ./admin_website:/usr/share/nginx/html:ro
+    networks:
+      internal:
+        ipv4_address: 10.255.0.100
+    environment:
+      - ROLE=admin
+
+  # Usuario Administrativo - Acceso a recursos institucionales
+  user_admin_web:
+    image: nginx:latest
+    container_name: user_admin_web
+    ports:
+      - "8081:80"
+    volumes:
+      - ./user_admin_website:/usr/share/nginx/html:ro
+    networks:
+      internal:
+        ipv4_address: 10.255.0.101
+    environment:
+      - ROLE=user_admin
+
+  # Docente - Acceso a servidores académicos
+  docente_web:
+    image: nginx:latest
+    container_name: docente_web
+    ports:
+      - "8082:80"
+    volumes:
+      - ./docente_materials:/usr/share/nginx/html:ro
+    networks:
+      internal:
+        ipv4_address: 10.255.0.102
+    environment:
+      - ROLE=docente
+
+  # Secretaria - Acceso a sistemas administrativos
+  secretaria_web:
+    image: nginx:latest
+    container_name: secretaria_web
+    ports:
+      - "8083:80"
+    volumes:
+      - ./secretaria:/usr/share/nginx/html:ro
+    networks:
+      internal:
+        ipv4_address: 10.255.0.103
+    environment:
+      - ROLE=secretaria
+
+  # Alumno - Acceso a materiales educativos
+  alumno_web:
+    image: nginx:latest
+    container_name: alumno_web
+    ports:
+      - "8084:80"
+    volumes:
+      - ./alumno_materials:/usr/share/nginx/html:ro
+    networks:
+      internal:
+        ipv4_address: 10.255.0.104
+    environment:
+      - ROLE=alumno
+
+  # NFS Server - Materiales compartidos
+  nfs-server:
+    image: itsthenetwork/nfs-server-alpine:12
+    container_name: nfs_server
+    ports:
+      - "2049:2049"  # Puerto NFS
+    volumes:
+      - ./shared_materials:/mnt/nfs_share  # Directorio compartido
+    environment:
+      - SHARED_DIRECTORY=/mnt/nfs_share  # Definir la variable de entorno para el directorio compartido
+      - NFS_EXPORT=/mnt/nfs_share  # Asegurarse de que NFS exponga el directorio correcto
+    networks:
+      internal:
+        ipv4_address: 10.255.0.105
+
+
+  # DNS/DHCP Server - Para toda la red
+  #dns-dhcp:
+    #image: networkboot/dhcpd
+    #container_name: dns_dhcp
+    #ports:
+      #- "67:67/udp"  # DHCP
+      #- "53:53/udp"  # DNS
+    #volumes:
+      #- ./dhcpd.conf:/etc/dhcp/dhcpd.conf
+    #networks:
+      ##- internal
+
+networks:
+  internal:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: "10.255.0.0/24"
