@@ -1,0 +1,314 @@
+from flask import Flask, request, jsonify
+import pymysql
+import requests
+import time
+
+app = Flask(__name__)
+
+FLOODLIGHT_URL = "http://192.168.201.200:8080"  # Cambia si tu controlador tiene otra IP
+PORTAL_IP = "10.0.0.3"                     # IP del servidor donde está el portal cautivo
+PORTAL_TCP_PORT = 5000
+
+           
+
+def get_conn():
+    return pymysql.connect(
+        host="10.10.0.3",
+        user="radius",
+        password="radpass",
+        database="radius",
+        cursorclass=pymysql.cursors.DictCursor
+    )
+
+# Ya tienes esta función
+def get_attachment_points(mac_address):
+    url = f"{FLOODLIGHT_URL}/wm/device/"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = response.json()
+        for host in data:
+            if mac_address.lower() in [m.lower() for m in host.get("mac", [])]:
+                aps = host.get("attachmentPoint", [])
+                if aps:
+                    punto = aps[0]
+                    return punto["switchDPID"], punto["port"]
+                else:
+                    print(f"[!] La MAC {mac_address} no tiene attachmentPoint.")
+        print(f"[!] La MAC {mac_address} no fue encontrada.")
+    else:
+        print(f"[{response.status_code}] Respuesta: {response.text}")
+    return None, None
+
+def instalar_flows_http_por_mac(mac_origen, mac_destino):
+    src_dpid, src_port = get_attachment_points(mac_origen)
+    dst_dpid, dst_port = get_attachment_points(mac_destino)
+
+    if not src_dpid or not dst_dpid:
+        print("[ERROR] No se pudo obtener los DPIDs para la ruta.")
+        return
+
+    # Obtener ruta completa
+    url_ruta = f"{FLOODLIGHT_URL}/wm/topology/route/{src_dpid}/{src_port}/{dst_dpid}/{dst_port}/json"
+    r = requests.get(url_ruta)
+    if r.status_code != 200:
+        print(f"[ERROR] No se pudo obtener la ruta: {r.status_code}")
+        return
+
+    ruta = r.json()
+    for i, paso in enumerate(ruta):
+        dpid = paso["switch"]
+        out_port = paso["port"]["portNumber"]
+
+        flow = {
+            "switch": dpid,
+            "name": f"flow_http5000_{dpid[-4:]}_{i}",
+            "priority": 1000,
+            "eth_type": 2048,
+            "ip_proto": "6",  # TCP
+            "ipv4_dst": PORTAL_IP,
+            "tcp_dst": str(PORTAL_TCP_PORT),
+            "active": "true",
+            "hard_timeout": 0,
+            "idle_timeout": 0,
+            "actions": f"output={out_port}"
+        }
+
+        print(f"[INFO] Instalando flow en {dpid} → {out_port}")
+        resp = requests.post(f"{FLOODLIGHT_URL}/wm/staticflowpusher/json", json=flow)
+        if resp.status_code == 200:
+            print(f"[✓] Flow instalado correctamente en {dpid}")
+        else:
+            print(f"[✗] Error al instalar flow en {dpid}: {resp.text}")
+        time.sleep(0.1)
+
+
+@app.route("/users", methods=["POST"])
+def create_user():
+    data = request.json
+    username = data.get("username")
+    password = data.get("password")
+    role = data.get("role", "invitado")  # default role
+
+    if not username or not password:
+        return jsonify({"error": "username and password required"}), 400
+
+    conn = get_conn()
+    with conn.cursor() as cur:
+        # Verificar si el rol existe en la tabla rol
+        cur.execute("SELECT 1 FROM rol WHERE nombreRol = %s", (role,))
+        if not cur.fetchone():
+            conn.close()
+            return jsonify({"error": f"Rol '{role}' no válido. Por favor, corrija el rol o regístrelo primero."}), 400
+        
+        # Verificar si ya existe
+        cur.execute("SELECT 1 FROM radcheck WHERE username = %s", (username,))
+        if cur.fetchone():
+            conn.close()
+            return jsonify({"error": f"user '{username}' already exists"}), 409  # 409 Conflict
+
+        # Insertar nuevo usuario
+        cur.execute("""
+            INSERT INTO radcheck (username, attribute, op, value)
+            VALUES (%s, 'Cleartext-Password', ':=', %s)
+        """, (username, password))
+
+        cur.execute("""
+            INSERT INTO radreply (username, attribute, op, value)
+            VALUES (%s, 'Filter-Id', '=', %s)
+        """, (username, role))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({
+        "status": "created",
+        "username": username,
+        "role": role
+    }), 201
+
+
+
+@app.route("/users/<username>", methods=["GET"])
+def get_user(username):
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("SELECT value AS password FROM radcheck WHERE username = %s", (username,))
+        pw = cur.fetchone()
+        cur.execute("SELECT value AS role FROM radreply WHERE username = %s", (username,))
+        role = cur.fetchone()
+    conn.close()
+    if not pw:
+        return jsonify({"error": "user not found"}), 404
+    return jsonify({"username": username, "password": pw["password"], "role": role["role"] if role else None})
+
+@app.route("/users/<username>", methods=["PUT"])
+def update_user(username):
+    data = request.json
+    new_pw = data.get("password")
+    new_role = data.get("role")
+    conn = get_conn()
+    with conn.cursor() as cur:
+        if new_pw:
+            cur.execute("UPDATE radcheck SET value = %s WHERE username = %s", (new_pw, username))
+        if new_role:
+            cur.execute("UPDATE radreply SET value = %s WHERE username = %s", (new_role, username))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "updated", "user": username})
+
+@app.route("/users/<username>", methods=["DELETE"])
+def delete_user(username):
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("DELETE FROM radcheck WHERE username = %s", (username,))
+        cur.execute("DELETE FROM radreply WHERE username = %s", (username,))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "deleted", "user": username})
+
+# ========== CRUD: ROL ==========
+@app.route("/roles", methods=["GET"])
+def listar_roles():
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("SELECT * FROM rol")
+        roles = cur.fetchall()
+    conn.close()
+    return jsonify(roles)
+
+@app.route("/roles", methods=["POST"])
+def crear_rol():
+    data = request.get_json() 
+    nombre = data.get("nombreRol")
+    if not nombre:
+        return jsonify({"error": "nombreRol requerido"}), 400
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO rol (nombreRol) VALUES (%s)", (nombre,))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "created", "nombreRol": nombre}), 201
+
+@app.route("/roles/<int:id>", methods=["PUT"])
+def actualizar_rol(id):
+    data = request.json
+    nuevo_nombre = data.get("nombreRol")
+    if not nuevo_nombre:
+        return jsonify({"error": "nombreRol requerido"}), 400
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("UPDATE rol SET nombreRol = %s WHERE id = %s", (nuevo_nombre, id))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "updated", "id": id, "nombreRol": nuevo_nombre})
+
+@app.route("/roles/<int:id>", methods=["DELETE"])
+def eliminar_rol(id):
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("DELETE FROM rol WHERE id = %s", (id,))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "deleted", "id": id})
+
+# ========== CRUD: SERVICIO ==========
+@app.route("/servicios", methods=["GET"])
+def listar_servicios_filtrados():
+    rol = request.args.get("rol")  # Se obtiene con ?rol=rolsito
+    conn = get_conn()
+    with conn.cursor() as cur:
+        if rol:
+            # Subconsulta para obtener id del rol
+            cur.execute("SELECT id FROM rol WHERE nombreRol = %s", (rol,))
+            row = cur.fetchone()
+            if not row:
+                conn.close()
+                return jsonify([])  # o error 404 si prefieres
+            id_rol = row["id"]
+            cur.execute("SELECT * FROM servicios WHERE idRol = %s", (id_rol,))
+        else:
+            cur.execute("SELECT * FROM servicios")
+        servicios = cur.fetchall()
+    conn.close()
+    return jsonify(servicios)
+
+@app.route("/servicios", methods=["POST"])
+def crear_servicio():
+    data = request.json
+    nombre = data.get("nombre")
+    ip = data.get("ip")
+    puerto = data.get("puerto")
+    id_rol = data.get("idRol")
+    if not nombre or not ip or not id_rol:
+        return jsonify({"error": "nombre, ip, puerto e idRol son requeridos"}), 400
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO servicios (nombre, ip, puerto, idRol) VALUES (%s, %s, %s, %s)", (nombre, ip, puerto, id_rol))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "created", "nombre": nombre, "ip": ip, "puerto":puerto, "idRol": id_rol}), 201
+
+@app.route("/servicios/<int:id>", methods=["PUT"])
+def actualizar_servicio(id):
+    data = request.json
+    nombre = data.get("nombre")
+    ip = data.get("ip")
+    puerto = data.get("puerto")
+    id_rol = data.get("idRol")
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("""
+            UPDATE servicios SET nombre = %s, ip = %s, puerto = %s, idRol = %s WHERE id = %s
+        """, (nombre, ip, puerto, id_rol, id))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "updated", "id": id})
+
+@app.route("/servicios/<int:id>", methods=["DELETE"])
+def eliminar_servicio(id):
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("DELETE FROM servicios WHERE id = %s", (id,))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "deleted", "id": id})
+
+# ========== CRUD: LOGS ==========
+@app.route("/logs", methods=["GET"])
+def listar_logs():
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("SELECT * FROM logs ORDER BY fecha DESC")
+        logs = cur.fetchall()
+    conn.close()
+    return jsonify(logs)
+
+@app.route("/logs", methods=["POST"])
+def registrar_log():
+    data = request.json
+    username = data.get("username")
+    rol = data.get("rol")
+    mac = data.get("mac")
+    ip = data.get("ip")
+
+    if not username or not rol:
+        return jsonify({"error": "username y rol son requeridos"}), 400
+
+    conn = get_conn()
+    with conn.cursor() as cur:
+        cur.execute("""
+            INSERT INTO logs (username, rol, mac, ip) 
+            VALUES (%s, %s, %s, %s)
+        """, (username, rol, mac, ip))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "log registrado"}), 201
+
+if __name__ == "__main__":
+    instalar_flows_http_por_mac("fa:16:3e:55:70:7a", "fa:16:3e:e6:f6:7a")
+    app.run(host="0.0.0.0", port=5010)
+
+
+
+

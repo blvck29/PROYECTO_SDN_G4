@@ -163,19 +163,24 @@ def auth_event():
     if role == "admin":
         print(f"[OK] - Autenticado como admin", flush=True)
         obtener_servicios_permitidos_por_rol("admin",mac)
+        obtener_servicios_permitidos_por_rol("invitado",mac)
         #os.system("curl -X POST http://controller:8080/apply_admin_flows")
     elif role == "admin_user":
         print(f"[OK] - Autenticado como admin_user", flush=True)
         obtener_servicios_permitidos_por_rol("admin_user",mac)
+        obtener_servicios_permitidos_por_rol("invitado",mac)
     elif role == "docente":
         print(f"[OK] - Autenticado como docente", flush=True)
         obtener_servicios_permitidos_por_rol("docente",mac)
+        obtener_servicios_permitidos_por_rol("invitado",mac)
     elif role == "secretaria":
         print(f"[OK] - Autenticado como secretaria", flush=True)
         obtener_servicios_permitidos_por_rol("secretaria",mac)
+        obtener_servicios_permitidos_por_rol("invitado",mac)
     elif role == "alumno":
         print(f"[OK] - Autenticado como alumno", flush=True)
         obtener_servicios_permitidos_por_rol("alumno",mac)
+        obtener_servicios_permitidos_por_rol("invitado",mac)
         #os.system("curl -X POST http://controller:8080/apply_student_flows")
     else:
         print(f"[OK] - Autenticado sin rol - invitado", flush=True)
